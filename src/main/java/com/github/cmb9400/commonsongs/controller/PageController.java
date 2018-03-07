@@ -1,11 +1,7 @@
 package com.github.cmb9400.commonsongs.controller;
 
-import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
-import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
-
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 
@@ -24,18 +20,5 @@ public interface PageController {
      */
     @RequestMapping("/callback")
     public String callback(String code, Model model, HttpSession session);
-
-    /**
-     * Remove a given song from its playlist as well as from the internal db of skipped songs
-     */
-    @RequestMapping(value = "/remove", method= RequestMethod.POST)
-    public String removeFromPlaylist(SkippedTrackEntity song, Model model, HttpSession session);
-
-    /**
-     * Remove a given song from the internal db, but not from its playlist
-     */
-    @RequestMapping(value = "/dontremove", method= RequestMethod.POST)
-    public String keepInPlaylist(SkippedTrackEntity song, Model model, HttpSession session);
-
 
 }
