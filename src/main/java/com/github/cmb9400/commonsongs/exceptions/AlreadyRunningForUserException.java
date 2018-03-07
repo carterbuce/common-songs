@@ -1,4 +1,4 @@
-package main.java.com.github.cmb9400.commonsongs.exceptions;
+package com.github.cmb9400.commonsongs.exceptions;
 
 public class AlreadyRunningForUserException extends Exception {
 

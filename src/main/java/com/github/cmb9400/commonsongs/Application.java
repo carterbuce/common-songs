@@ -1,4 +1,4 @@
-package main.java.com.github.cmb9400.commonsongs;
+package com.github.cmb9400.commonsongs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

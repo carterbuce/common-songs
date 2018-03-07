@@ -1,10 +1,10 @@
-package main.java.com.github.cmb9400.commonsongs.controller;
+package com.github.cmb9400.commonsongs.controller;
 
-import com.github.cmb9400.skipassistant.domain.SkippedTrackEntity;
-import com.github.cmb9400.skipassistant.domain.SkippedTrackRepository;
-import com.github.cmb9400.skipassistant.exceptions.AlreadyRunningForUserException;
-import com.github.cmb9400.skipassistant.service.SpotifyHelperService;
-import com.github.cmb9400.skipassistant.service.SpotifyPollingService;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackRepository;
+import com.github.cmb9400.commonsongs.exceptions.AlreadyRunningForUserException;
+import com.github.cmb9400.commonsongs.service.SpotifyHelperService;
+import com.github.cmb9400.commonsongs.service.SpotifyPollingService;
 import com.wrapper.spotify.SpotifyApi;
 
 import org.springframework.beans.factory.annotation.Autowired;

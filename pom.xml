@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>common-songs</name>
-	<description>TODO</description>
+	<description>Generate a playlist from songs that spotify users have in common</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

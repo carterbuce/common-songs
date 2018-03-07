@@ -1,6 +1,7 @@
-package main.java.com.github.cmb9400.commonsongs.controller;
+package com.github.cmb9400.commonsongs.controller;
 
-import com.github.cmb9400.skipassistant.domain.SkippedTrackEntity;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

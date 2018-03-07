@@ -1,4 +1,4 @@
-package main.java.com.github.cmb9400.commonsongs.domain;
+package com.github.cmb9400.commonsongs.domain;
 
 import org.springframework.stereotype.Component;
 

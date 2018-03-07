@@ -1,8 +1,8 @@
-package main.java.com.github.cmb9400.commonsongs.service;
+package com.github.cmb9400.commonsongs.service;
 
-import com.github.cmb9400.skipassistant.domain.SkippedTrackConverter;
-import com.github.cmb9400.skipassistant.domain.SkippedTrackRepository;
-import com.github.cmb9400.skipassistant.exceptions.AlreadyRunningForUserException;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackConverter;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackRepository;
+import com.github.cmb9400.commonsongs.exceptions.AlreadyRunningForUserException;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;

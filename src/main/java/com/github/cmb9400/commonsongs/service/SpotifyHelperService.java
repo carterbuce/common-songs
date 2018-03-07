@@ -1,7 +1,8 @@
-package main.java.com.github.cmb9400.commonsongs.service;
+package com.github.cmb9400.commonsongs.service;
 
-import com.github.cmb9400.skipassistant.domain.SkippedTrackEntity;
-import com.github.cmb9400.skipassistant.domain.SkippedTrackRepository;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackRepository;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackEntity;
+import com.github.cmb9400.commonsongs.domain.SkippedTrackRepository;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
