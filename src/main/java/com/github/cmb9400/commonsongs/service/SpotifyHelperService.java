@@ -6,12 +6,10 @@ import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.model_objects.specification.SavedTrack;
-import com.wrapper.spotify.model_objects.specification.User;
+import com.wrapper.spotify.model_objects.specification.Track;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +18,16 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
 public class SpotifyHelperService {
 
     @Resource
-    public Environment env;
-
-    @Autowired
-    ApplicationContext applicationContext;
-
-    public Map<String, SpotifyApi> runningUsers = new HashMap<>();
+    private Environment env;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpotifyHelperService.class);
 
@@ -44,9 +36,8 @@ public class SpotifyHelperService {
      * Get an API builder
      * @return a new API builder with client settings
      */
-    public SpotifyApi.Builder getApiBuilder() {
-        SpotifyApi.Builder builder = null;
-
+    private SpotifyApi.Builder getApiBuilder() {
+        SpotifyApi.Builder builder;
 
         URI redirectUri = SpotifyHttpManager.makeUri(env.getProperty("spotify.redirect.uri"));
         builder = SpotifyApi.builder()
@@ -76,20 +67,16 @@ public class SpotifyHelperService {
     /**
      * Log in to the account using the authorization code and get the access token
      */
-    public String login(String code) throws IOException, SpotifyWebApiException, RuntimeException {
+    public SpotifyApi login(String code) throws IOException, SpotifyWebApiException, RuntimeException {
         try {
             SpotifyApi api = getApiBuilder().build();
-            User user;
 
             LOGGER.info("Getting Tokens from Authorization Code...");
             AuthorizationCodeCredentials authorizationCodeCredentials = api.authorizationCode(code).build().execute();
             api.setAccessToken(authorizationCodeCredentials.getAccessToken());
             api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            user = api.getCurrentUsersProfile().build().execute();
-            String userId = user.getId();
 
-            runningUsers.put(userId, api);
-            return userId;
+            return api;
         }
         catch (SpotifyWebApiException | IOException e) {
             LOGGER.error(e.getMessage());
@@ -99,16 +86,29 @@ public class SpotifyHelperService {
 
 
 
-    public void collectTracks(String userId, SpotifyApi api) throws SpotifyWebApiException, IOException {
-        // Collect all of a user's saved tracks
-        Set<SavedTrack> savedTracks = new HashSet<>();
-        Paging<SavedTrack> savedTrackPage = api.getUsersSavedTracks().build().execute();
-        for(int i = 0; i <= savedTrackPage.getTotal(); i += 50) {
-            savedTrackPage = api.getUsersSavedTracks().limit(50).offset(i).build().execute(); // 50 is spotify's max
-            savedTracks.addAll(Arrays.asList(savedTrackPage.getItems())); // arrays.asList() is O(1)
+    public boolean collectTracks(SpotifyApi api) {
+        try {
+            // Collect all of a user's saved tracks
+            Set<String> savedTracks = new HashSet<>();
+            Paging<SavedTrack> savedTrackPage = api.getUsersSavedTracks().build().execute();
+            for (int i = 0; i <= savedTrackPage.getTotal(); i += 50) {
+                savedTrackPage = api.getUsersSavedTracks().limit(50).offset(i).build().execute(); // 50 is spotify's max
 
+                savedTracks.addAll(
+                        Arrays.stream(savedTrackPage.getItems())
+                                .map(SavedTrack::getTrack)
+                                .map(Track::getUri)
+                                .collect(Collectors.toList())
+                );
+
+            }
+
+            return true;
         }
-
+        catch (SpotifyWebApiException | IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            return false;
+        }
     }
 
 }

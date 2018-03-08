@@ -7,6 +7,8 @@ import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,11 +33,10 @@ public class PageControllerImpl implements PageController {
             String authURL = spotifyHelperService.getAuthorizationURL();
             model.addAttribute("loginURL", authURL);
 
-            return "index";
+            return "login";
         }
         else {
-            model.addAttribute("user", session.getAttribute("user"));
-            return "songList";
+            return "index";
 
             //click add user, it adds their userid to a session variable (so maintain a list of those, no need for api)
             // on the site, it'll list "[<userid> 5376 songs]" for each user, have a "compare!" button
@@ -54,15 +55,8 @@ public class PageControllerImpl implements PageController {
     @Override
     public String callback(@RequestParam(value="code", required=true) String code, Model model, HttpSession session) {
         try {
-
-            String userId = spotifyHelperService.login(code);
-            SpotifyApi api = spotifyHelperService.runningUsers.get(userId);
-
-            // TODO determine session attribute security to figure out if storing userId there is safe
-            session.setAttribute("user", userId);
+            SpotifyApi api = spotifyHelperService.login(code);
             session.setAttribute("api", api);
-
-            spotifyHelperService.collectTracks(userId, api);
 
             return "redirect:/";
         }
@@ -70,6 +64,21 @@ public class PageControllerImpl implements PageController {
             LOGGER.error(e.getMessage());
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+
+    @Override
+    public ResponseEntity updateSavedTracks(HttpSession session) {
+        boolean success = false;
+
+        if (session.getAttribute("api") != null) {
+            LOGGER.info("Getting saved tracks...");
+            SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+            success = spotifyHelperService.collectTracks(api);
+            LOGGER.info("Saved tracks collected.");
+        }
+
+        return success ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 }
