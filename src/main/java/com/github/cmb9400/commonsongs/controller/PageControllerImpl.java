@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 
@@ -55,7 +54,7 @@ public class PageControllerImpl implements PageController {
 
 
     @Override
-    public String callback(@RequestParam(value="code", required=true) String code, Model model, HttpSession session) {
+    public String callback(String code, Model model, HttpSession session) {
         try {
             SpotifyApi api = spotifyHelperService.login(code);
             session.setAttribute("api", api);
