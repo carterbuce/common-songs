@@ -10,6 +10,7 @@ import com.wrapper.spotify.model_objects.specification.Track;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,8 @@ public class SpotifyHelperService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpotifyHelperService.class);
 
+    @Autowired
+    private MockDatabase database;
 
     /**
      * Get an API builder
@@ -88,7 +93,9 @@ public class SpotifyHelperService {
 
     public boolean collectTracks(SpotifyApi api) {
         try {
-            // Collect all of a user's saved tracks
+            // Collect all of a user's saved tracks using spotify's paginated request format
+            // TODO maybe keep the track item itself instead of just URI? check their .equals() method
+            // TODO handle the same track with different spotify URIs, ex 3xZ4wgiv2fIiIWrKYPLlng and 0OgGn1ofaj55l2PcihQQGV
             Set<String> savedTracks = new HashSet<>();
             Paging<SavedTrack> savedTrackPage = api.getUsersSavedTracks().build().execute();
             for (int i = 0; i <= savedTrackPage.getTotal(); i += 50) {
@@ -100,8 +107,11 @@ public class SpotifyHelperService {
                                 .map(Track::getUri)
                                 .collect(Collectors.toList())
                 );
-
             }
+
+            // save the set of saved tracks
+            String userId = api.getCurrentUsersProfile().build().execute().getId();
+            database.setUserSavedTracks(userId, savedTracks);
 
             return true;
         }
