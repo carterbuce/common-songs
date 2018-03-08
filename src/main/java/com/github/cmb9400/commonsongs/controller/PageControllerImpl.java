@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class PageControllerImpl implements PageController {
@@ -69,16 +71,18 @@ public class PageControllerImpl implements PageController {
 
     @Override
     public ResponseEntity updateSavedTracks(HttpSession session) {
-        boolean success = false;
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("success", false);
 
         if (session.getAttribute("api") != null) {
             LOGGER.info("Getting saved tracks...");
             SpotifyApi api = (SpotifyApi) session.getAttribute("api");
-            success = spotifyHelperService.collectTracks(api);
+            response.put("success", spotifyHelperService.collectTracks(api));
             LOGGER.info("Saved tracks collected.");
         }
 
-        return success ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.BAD_REQUEST);
+        // return a 200 ok with body of {"success": <true|false>}
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
 }
