@@ -26,5 +26,33 @@
 
 <input type="button" value="Update My Saved Songs" id="updateButton" />
 
+<br /><br />
+
+<form ACTION="#" th:action="@{/create}" th:object="${group}" method="POST">
+    <input type="text" name="name" />
+    <button>Create New Group</button>
+
+</form>
+
+<table border="1" th:if="${!groups.empty}">
+    <tr>
+        <td>Name</td>
+        <td>Size</td>
+        <td>View</td>
+    </tr>
+    <tr th:each="group : ${groups}">
+        <td>
+            <p th:text="${group.name}"></p>
+        </td>
+        <td>
+            <p th:text="${group.users.size}"></p>
+        </td>
+        <td>
+            <a th:href="|/group?id=${group.id}|">Go</a>
+        </td>
+    </tr>
+</table>
+
+
 </body>
 </html>

@@ -24,7 +24,6 @@ public interface PageController {
     @GetMapping("/callback")
     public String callback(String code, Model model, HttpSession session);
 
-
     /**
      * endpoint to update a user's saved tracks
      */
@@ -32,4 +31,7 @@ public interface PageController {
     @ResponseBody
     public ResponseEntity updateSavedTracks(HttpSession session);
 
+
+    @GetMapping("/group")
+    public String group(String groupId, Model model, HttpSession session);
 }

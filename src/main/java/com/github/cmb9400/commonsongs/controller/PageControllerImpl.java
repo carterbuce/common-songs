@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class PageControllerImpl implements PageController {
             return "login";
         }
         else {
+            model.addAttribute("groups", new ArrayList<>());
             return "index";
 
             //click add user, it adds their userid to a session variable (so maintain a list of those, no need for api)
@@ -82,6 +84,12 @@ public class PageControllerImpl implements PageController {
 
         // return a 200 ok with body of {"success": <true|false>}
         return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+
+    @Override
+    public String group(String groupId, Model model, HttpSession session) {
+        return "group";
     }
 
 }
