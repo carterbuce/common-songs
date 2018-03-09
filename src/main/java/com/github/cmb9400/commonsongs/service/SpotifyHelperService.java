@@ -90,7 +90,9 @@ public class SpotifyHelperService {
     }
 
 
-
+    /**
+     * for a given user, collect all of their saved tracks to the database
+     */
     public boolean collectTracks(SpotifyApi api) {
         try {
             // Collect all of a user's saved tracks using spotify's paginated request format
@@ -119,6 +121,15 @@ public class SpotifyHelperService {
             LOGGER.error(e.getMessage(), e);
             return false;
         }
+    }
+
+
+    /**
+     * create a new group and add the user to it
+     * @return the new group's id
+     */
+    public String createGroup(SpotifyApi api) {
+        return "foo";
     }
 
 }
