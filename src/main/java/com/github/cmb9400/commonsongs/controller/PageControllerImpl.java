@@ -1,5 +1,6 @@
 package com.github.cmb9400.commonsongs.controller;
 
+import com.github.cmb9400.commonsongs.service.SpotifyDataService;
 import com.github.cmb9400.commonsongs.service.SpotifyHelperService;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -7,7 +8,6 @@ import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +26,9 @@ public class PageControllerImpl implements PageController {
 
     @Autowired
     SpotifyHelperService spotifyHelperService;
+
+    @Autowired
+    SpotifyDataService spotifyDataService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PageControllerImpl.class);
 
@@ -61,6 +63,7 @@ public class PageControllerImpl implements PageController {
     public String callback(String code, Model model, HttpSession session) {
         try {
             SpotifyApi api = spotifyHelperService.login(code);
+            spotifyDataService.createUser(api);
             session.setAttribute("api", api);
 
             return "redirect:/";
@@ -85,7 +88,7 @@ public class PageControllerImpl implements PageController {
         if (session.getAttribute("api") != null) {
             LOGGER.info("Getting saved tracks...");
             SpotifyApi api = (SpotifyApi) session.getAttribute("api");
-            response.put("success", spotifyHelperService.collectTracks(api));
+            response.put("success", spotifyDataService.collectTracks(api));
             LOGGER.info("Saved tracks collected.");
         }
 
@@ -95,15 +98,23 @@ public class PageControllerImpl implements PageController {
 
     @Override
     public String createGroup(String name, HttpSession session) {
-        if (session.getAttribute("api") != null) { // user is logged in
-            LOGGER.info("Creating group with name " + name + "...");
-            SpotifyApi api = (SpotifyApi) session.getAttribute("api");
-            String groupId = spotifyHelperService.createGroup(api);
-
-            return "redirect:/group?groupId=" + groupId;
+        if (name == null || name.trim().equals("")
+                || session.getAttribute("api") == null) {
+            return "index";
         }
+        else {
+            try {
+                LOGGER.info("Creating group with name " + name + "...");
+                SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+                String groupId = spotifyDataService.createGroup(api, name);
+                spotifyDataService.registerUserWithGroup(api, groupId);
 
-        return "index";
+                return "redirect:/group?groupId=" + groupId;
+            }
+            catch(IOException | SpotifyWebApiException e) {
+                return "index";
+            }
+        }
     }
 
 }

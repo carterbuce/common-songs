@@ -24,11 +24,11 @@ public class MockRepository {
         return groupMap.get(groupId);
     }
 
-    public Set<Group> getGroups(String userId) {
+    public Set<Group> getGroupsFor(String userId) {
         return userMap.get(userId).groups;
     }
 
-    public Set<User> getUsers(String groupId) {
+    public Set<User> getUsersFor(String groupId) {
         return groupMap.get(groupId).users;
     }
 
@@ -40,8 +40,12 @@ public class MockRepository {
         userMap.put(user.userId, user);
     }
 
+    @Transactional
     public void createGroup(Group group) {
-        groupMap.put(group.groupId, group);
+        if(groupMap.get(group.groupId) == null) {
+            groupMap.put(group.groupId, group);
+        }
+        // TODO else throw exception?
     }
 
     @Transactional
@@ -61,8 +65,8 @@ public class MockRepository {
     }
 
     public boolean isUserRegisteredWithGroup(String userId, String groupId) {
-        boolean groupHasUser = (getUsers(groupId) != null && getUsers(groupId).stream().map(User::getUserId).collect(Collectors.toSet()).contains(userId));
-        boolean userHasGroup = (getGroups(userId) != null && getGroups(userId).stream().map(Group::getGroupId).collect(Collectors.toSet()).contains(groupId));
+        boolean groupHasUser = (getUsersFor(groupId) != null && getUsersFor(groupId).stream().map(User::getUserId).collect(Collectors.toSet()).contains(userId));
+        boolean userHasGroup = (getGroupsFor(userId) != null && getGroupsFor(userId).stream().map(Group::getGroupId).collect(Collectors.toSet()).contains(groupId));
 
         return groupHasUser && userHasGroup;
     }
