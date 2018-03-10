@@ -116,6 +116,14 @@ public class SpotifyDataService {
 
 
     /**
+     * get a group from the database
+     */
+    public Group getGroup(String groupId) {
+        return database.getGroup(groupId);
+    }
+
+
+    /**
      * register a user with a group
      */
     public void registerUserWithGroup(SpotifyApi api, String groupId) throws IOException, SpotifyWebApiException {

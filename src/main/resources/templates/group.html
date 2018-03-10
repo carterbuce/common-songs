@@ -12,10 +12,27 @@
 <body>
 
 <a th:href="@{'/'}">back</a>
-<br />
-<input type="button" value="Join group" id="join" />
-<input type="button" value="Get group playlist" id="compute" />
 <br /><br />
+<input type="button" value="Join group" id="join" />
+<br />
+
+<table border="1">
+    <tr>
+        <td>User ID</td>
+        <td>Saved Songs</td>
+    </tr>
+    <tr th:each="user : ${group.users}">
+        <td>
+            <p th:text="${user.userId}"></p>
+        </td>
+        <td>
+            <p th:text="${#sets.size(user.savedSongs)}"></p>
+        </td>
+    </tr>
+</table>
+
+<input type="button" value="Get group playlist" id="compute" />
+<br />
 To invite friends to this group, share the link with them! <br /> They must be logged in first.
 
 

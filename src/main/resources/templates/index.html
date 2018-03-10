@@ -37,7 +37,7 @@
 <table border="1" th:if="${!user.groups.empty}">
     <tr>
         <td>Name</td>
-        <td>Size</td>
+        <td>Num. Users</td>
         <td>View</td>
     </tr>
     <tr th:each="group : ${user.groups}">
@@ -48,7 +48,7 @@
             <p th:text="${#sets.size(group.users)}"></p>
         </td>
         <td>
-            <a th:href="|/group?id=${group.groupId}|">Go</a>
+            <a th:href="|/group?groupId=${group.groupId}|">Go</a>
         </td>
     </tr>
 </table>

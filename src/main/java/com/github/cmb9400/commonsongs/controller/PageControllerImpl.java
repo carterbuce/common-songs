@@ -1,5 +1,6 @@
 package com.github.cmb9400.commonsongs.controller;
 
+import com.github.cmb9400.commonsongs.domain.Group;
 import com.github.cmb9400.commonsongs.service.SpotifyDataService;
 import com.github.cmb9400.commonsongs.service.SpotifyHelperService;
 import com.wrapper.spotify.SpotifyApi;
@@ -57,7 +58,18 @@ public class PageControllerImpl implements PageController {
             spotifyDataService.createUser(api);
             session.setAttribute("api", api);
 
-            return "redirect:/";
+            // bring them back to the group page if they were trying to view one
+            if(session.getAttribute("redirectGroup") != null) {
+                String groupId = (String) session.getAttribute("redirectGroup");
+                session.setAttribute("redirectGroup", null);
+
+                return "redirect:/group?groupId=" + groupId;
+            }
+            else {
+                return "redirect:/";
+            }
+
+
         }
         catch (SpotifyWebApiException | IOException e) {
             LOGGER.error(e.getMessage());
@@ -68,6 +80,23 @@ public class PageControllerImpl implements PageController {
 
     @Override
     public String getGroup(String groupId, Model model, HttpSession session) {
+        // if user isn't logged in, then remember which group they were trying to access
+        // and send them to the login page
+        if (session.getAttribute("api") == null) {
+            session.setAttribute("redirectGroup", groupId);
+            return "redirect:/";
+        }
+
+        SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+        String userId = spotifyHelperService.getUserId(api);
+
+        if(!spotifyDataService.groupIdExists(groupId)) {
+            return "redirect:/";
+        }
+
+        Group group = spotifyDataService.getGroup(groupId);
+        model.addAttribute("group", group);
+
         return "group";
     }
 
@@ -91,7 +120,7 @@ public class PageControllerImpl implements PageController {
     public String createGroup(String name, HttpSession session) {
         if (name == null || name.trim().equals("")
                 || session.getAttribute("api") == null) {
-            return "index";
+            return "redirect:/";
         }
         else {
             try {
@@ -103,7 +132,7 @@ public class PageControllerImpl implements PageController {
                 return "redirect:/group?groupId=" + groupId;
             }
             catch(IOException | SpotifyWebApiException e) {
-                return "index";
+                return "redirect:/";
             }
         }
     }
