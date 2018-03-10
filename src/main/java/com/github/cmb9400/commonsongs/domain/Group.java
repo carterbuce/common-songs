@@ -1,16 +1,19 @@
 package com.github.cmb9400.commonsongs.domain;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public class Group implements Serializable{
     protected String groupId;
     protected String name;
+    protected Set<User> users;
 
     public Group(){}
 
-    public Group(String groupId, String name) {
+    public Group(String groupId, String name, Set<User> users) {
         this.groupId = groupId;
         this.name = name;
+        this.users = users;
     }
 
     public String getGroupId() {
@@ -27,6 +30,14 @@ public class Group implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.github.cmb9400.commonsongs.service;
 
+import com.github.cmb9400.commonsongs.domain.Group;
+import com.github.cmb9400.commonsongs.domain.MockRepository;
+import com.github.cmb9400.commonsongs.domain.User;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -19,9 +22,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class SpotifyHelperService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpotifyHelperService.class);
 
     @Autowired
-    private MockDatabase database;
+    private MockRepository database;
 
     /**
      * Get an API builder
@@ -80,6 +81,9 @@ public class SpotifyHelperService {
             AuthorizationCodeCredentials authorizationCodeCredentials = api.authorizationCode(code).build().execute();
             api.setAccessToken(authorizationCodeCredentials.getAccessToken());
             api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+
+            String userId = api.getCurrentUsersProfile().build().execute().getId();
+            createUser(userId);
 
             return api;
         }
@@ -130,6 +134,28 @@ public class SpotifyHelperService {
      */
     public String createGroup(SpotifyApi api) {
         return "foo";
+    }
+
+
+    /**
+     * determine if a group id exists in the database
+     */
+    public boolean groupIdExists(String groupId) {
+        return false;
+    }
+
+    /**
+     * add a user to the database
+     * @return the user id
+     */
+    public String createUser(String userId){
+
+        if(database.getUser(userId) == null) {
+            User user = new User(userId, new HashSet<String>(), new HashSet<Group>());
+            database.createUser(user);
+        }
+
+        return userId;
     }
 
 }

@@ -7,12 +7,14 @@ public class User implements Serializable{
 
     protected String userId;
     protected Set<String> savedSongs;
+    protected Set<Group> groups;
 
     public User(){}
 
-    public User(String userId, Set<String> savedSongs) {
+    public User(String userId, Set<String> savedSongs, Set<Group> groups) {
         this.userId = userId;
         this.savedSongs = savedSongs;
+        this.groups = groups;
     }
 
     public String getUserId() {
@@ -31,14 +33,20 @@ public class User implements Serializable{
         this.savedSongs = savedSongs;
     }
 
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
     @Override
     public int hashCode(){
         final int prime = 31;
         int result = 1;
         result = prime * result
                 + ((userId == null) ? 0 : userId.hashCode());
-        result = prime * result
-                + ((savedSongs == null) ? 0 : savedSongs.hashCode());
         return result;
     }
 
@@ -49,9 +57,7 @@ public class User implements Serializable{
 
         if (obj instanceof User) {
             User other = (User) obj;
-
-            return other.userId.equals(this.userId) &&
-                    other.savedSongs.equals(this.savedSongs);
+            return other.userId.equals(this.userId);
         } else {
             return false;
         }
