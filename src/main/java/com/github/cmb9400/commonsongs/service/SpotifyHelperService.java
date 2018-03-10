@@ -77,6 +77,18 @@ public class SpotifyHelperService {
         }
     }
 
+    /**
+     * get a userId from a spotifyApi and handle errors to return null
+     */
+    public String getUserId(SpotifyApi api) {
+        try {
+            return api.getCurrentUsersProfile().build().execute().getId();
+        }
+        catch (SpotifyWebApiException | IOException e) {
+            return null;
+        }
+    }
+
 
 
 }

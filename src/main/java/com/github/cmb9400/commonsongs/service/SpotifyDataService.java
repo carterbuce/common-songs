@@ -107,6 +107,13 @@ public class SpotifyDataService {
         }
     }
 
+    /**
+     * get a user from the database
+     */
+    public User getUser(String userId) {
+        return database.getUser(userId);
+    }
+
 
     /**
      * register a user with a group

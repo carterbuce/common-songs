@@ -24,6 +24,7 @@
 
 <body>
 
+<p th:text="'Number of saved songs for ' + ${user.userId} + ': ' + ${#sets.size(user.savedSongs)}">user</p>
 <input type="button" value="Update My Saved Songs" id="updateButton" />
 
 <br /><br />
@@ -31,24 +32,23 @@
 <form ACTION="#" th:action="@{/create}" th:object="${group}" method="POST">
     <input type="text" name="name" />
     <button>Create New Group</button>
-
 </form>
 
-<table border="1" th:if="${!groups.empty}">
+<table border="1" th:if="${!user.groups.empty}">
     <tr>
         <td>Name</td>
         <td>Size</td>
         <td>View</td>
     </tr>
-    <tr th:each="group : ${groups}">
+    <tr th:each="group : ${user.groups}">
         <td>
             <p th:text="${group.name}"></p>
         </td>
         <td>
-            <p th:text="${group.users.size}"></p>
+            <p th:text="${#sets.size(group.users)}"></p>
         </td>
         <td>
-            <a th:href="|/group?id=${group.id}|">Go</a>
+            <a th:href="|/group?id=${group.groupId}|">Go</a>
         </td>
     </tr>
 </table>

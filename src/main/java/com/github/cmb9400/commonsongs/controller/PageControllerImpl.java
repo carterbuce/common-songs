@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,19 +41,11 @@ public class PageControllerImpl implements PageController {
             return "login";
         }
         else {
-            model.addAttribute("groups", new ArrayList<>());
+            SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+            String userId = spotifyHelperService.getUserId(api);
+
+            model.addAttribute("user", spotifyDataService.getUser(userId));
             return "index";
-
-            //click add user, it adds their userid to a session variable (so maintain a list of those, no need for api)
-            // on the site, it'll list "[<userid> 5376 songs]" for each user, have a "compare!" button
-            // "you'll have to do this on a different device or a private browsing window" for share link
-
-            // eventually store in a non-relational database (?) to prevent memory leak and reset it every time
-            // collect tracks is called anyway
-
-
-            // have a list of "groups" that gets stored with each user, each group has an ID which is also the sharing link
-            // click on sharing link, get added to group (and group gets added to you)
         }
     }
 
