@@ -102,13 +102,18 @@ public class PageControllerImpl implements PageController {
 
     @Override
     public ResponseEntity updateSavedTracks(HttpSession session) {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("success", false);
+        Map<String, String> response = new HashMap<>();
+        response.put("success", "false");
 
         if (session.getAttribute("api") != null) {
             LOGGER.info("Getting saved tracks...");
             SpotifyApi api = (SpotifyApi) session.getAttribute("api");
-            response.put("success", spotifyDataService.collectTracks(api));
+
+            int numSavedSongs = spotifyDataService.collectTracks(api);
+            if (numSavedSongs >= 0) {
+                response.put("numSongs", String.valueOf(numSavedSongs));
+                response.put("success", "true");
+            }
             LOGGER.info("Saved tracks collected.");
         }
 

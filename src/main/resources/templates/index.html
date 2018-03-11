@@ -7,16 +7,43 @@
     <title>Common Songs</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+    <link rel="stylesheet" type="text/css" media="all" href="/static/css/spinner.css" th:href="@{/css/spinner.css}" />
+
     <script>
         function setUpdateButton() {
             var btn = document.getElementById('updateButton');
+
             btn.onclick = function () {
-                var request = new XMLHttpRequest();
-                request.open('POST', '/update', true);
-                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-                request.send();
+                var spinner = document.getElementById("savedSongsSpinner");
+                spinner.style.display = 'inline-block';
+                updateSongs();
             }
         }
+
+        function updateSongs() {
+            var request = new XMLHttpRequest();
+
+            request.onreadystatechange = function() {
+                if (request.readyState == XMLHttpRequest.DONE) {
+                    var numSongs = document.getElementById("numSongs");
+
+                    if (request.response['success'] == 'true') {
+                        numSongs.innerHTML = request.response['numSongs'];
+                    }
+
+                    var spinner = document.getElementById("savedSongsSpinner");
+                    spinner.style.display = 'none';
+                }
+            };
+
+            request.open('POST', '/update', true);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            request.responseType = 'json';
+            request.send();
+
+
+        }
+
         window.onload = setUpdateButton;
     </script>
 </head>
@@ -24,8 +51,19 @@
 
 <body>
 
-<p th:text="'Number of saved songs for ' + ${user.userId} + ': ' + ${#sets.size(user.savedSongs)}">user</p>
+<p style="display: inline" th:text="'Number of saved songs for ' + ${user.userId} + ': '">user</p>
+<p style="display: inline" id="numSongs" th:text="${#sets.size(user.savedSongs)}"> numSongs </p>
+
+<br />
+
 <input type="button" value="Update My Saved Songs" id="updateButton" />
+<div class="spinner" id="savedSongsSpinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div>
 
 <br /><br />
 

@@ -36,7 +36,7 @@ public class SpotifyDataService {
     /**
      * for a given user, collect all of their saved tracks to the database
      */
-    public boolean collectTracks(SpotifyApi api) {
+    public int collectTracks(SpotifyApi api) {
         try {
             // Collect all of a user's saved tracks using spotify's paginated request format
             // TODO maybe keep the track item itself instead of just URI? check their .equals() method
@@ -58,11 +58,11 @@ public class SpotifyDataService {
             String userId = api.getCurrentUsersProfile().build().execute().getId();
             database.setUserSavedTracks(userId, savedTracks);
 
-            return true;
+            return savedTracks.size();
         }
         catch (SpotifyWebApiException | IOException e) {
             LOGGER.error(e.getMessage(), e);
-            return false;
+            return -1;
         }
     }
 
