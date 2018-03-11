@@ -8,32 +8,37 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
-
 <body>
 
-<a th:href="@{'/'}">back</a>
-<br /><br />
-<input type="button" value="Join group" id="join" />
-<br />
+    <a th:href="@{'/'}">back</a>
 
-<table border="1">
-    <tr>
-        <td>User ID</td>
-        <td>Saved Songs</td>
-    </tr>
-    <tr th:each="user : ${group.users}">
-        <td>
-            <p th:text="${user.userId}"></p>
-        </td>
-        <td>
-            <p th:text="${#sets.size(user.savedSongs)}"></p>
-        </td>
-    </tr>
-</table>
+    <br /><br />
 
-<input type="button" value="Get group playlist" id="compute" />
-<br />
-To invite friends to this group, share the link with them! <br /> They must be logged in first.
+    <form ACTION="#" th:action="@{/join}" method="POST">
+        <input type="hidden" th:name="groupId" th:value="${group.groupId}" />
+        <button>Join Group</button>
+    </form>
+
+    <br />
+
+    <table border="1">
+        <tr>
+            <td>User ID</td>
+            <td>Saved Songs</td>
+        </tr>
+        <tr th:each="user : ${group.users}">
+            <td>
+                <p th:text="${user.userId}"></p>
+            </td>
+            <td>
+                <p th:text="${#sets.size(user.savedSongs)}"></p>
+            </td>
+        </tr>
+    </table>
+
+    <input type="button" value="Get group playlist" id="compute" />
+    <br /><br />
+    To invite friends to this group, share the link with them! <br /> They must be logged in first.
 
 
 </body>

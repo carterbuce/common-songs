@@ -51,45 +51,45 @@
 
 <body>
 
-<p style="display: inline" th:text="'Number of saved songs for ' + ${user.userId} + ': '">user</p>
-<p style="display: inline" id="numSongs" th:text="${#sets.size(user.savedSongs)}"> numSongs </p>
+    <p style="display: inline" th:text="'Number of saved songs for ' + ${user.userId} + ': '">user</p>
+    <p style="display: inline" id="numSongs" th:text="${#sets.size(user.savedSongs)}"> numSongs </p>
 
-<br />
+    <br />
 
-<input type="button" value="Update My Saved Songs" id="updateButton" />
-<div class="spinner" id="savedSongsSpinner">
-    <div class="rect1"></div>
-    <div class="rect2"></div>
-    <div class="rect3"></div>
-    <div class="rect4"></div>
-    <div class="rect5"></div>
-</div>
+    <input type="button" value="Update My Saved Songs" id="updateButton" />
+    <div class="spinner" id="savedSongsSpinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+    </div>
 
-<br /><br />
+    <br /><br />
 
-<form ACTION="#" th:action="@{/create}" th:object="${group}" method="POST">
-    <input type="text" name="name" />
-    <button>Create New Group</button>
-</form>
+    <form ACTION="#" th:action="@{/create}" th:object="${group}" method="POST">
+        <input type="text" name="name" />
+        <button>Create New Group</button>
+    </form>
 
-<table border="1" th:if="${!user.groups.empty}">
-    <tr>
-        <td>Name</td>
-        <td>Num. Users</td>
-        <td>View</td>
-    </tr>
-    <tr th:each="group : ${user.groups}">
-        <td>
-            <p th:text="${group.name}"></p>
-        </td>
-        <td>
-            <p th:text="${#sets.size(group.users)}"></p>
-        </td>
-        <td>
-            <a th:href="|/group?groupId=${group.groupId}|">Go</a>
-        </td>
-    </tr>
-</table>
+    <table border="1" th:if="${!user.groups.empty}">
+        <tr>
+            <td>Name</td>
+            <td>Num. Users</td>
+            <td>View</td>
+        </tr>
+        <tr th:each="group : ${user.groups}">
+            <td>
+                <p th:text="${group.name}"></p>
+            </td>
+            <td>
+                <p th:text="${#sets.size(group.users)}"></p>
+            </td>
+            <td>
+                <a th:href="|/group?groupId=${group.groupId}|">Go</a>
+            </td>
+        </tr>
+    </table>
 
 
 </body>

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
-import java.util.Map;
-
 public interface PageController {
 
     /**
@@ -44,5 +42,11 @@ public interface PageController {
      */
     @PostMapping("/create")
     public String createGroup(String name, HttpSession session);
+
+    /**
+     * endpoint to add a new user to an existing group
+     */
+    @PostMapping("/join")
+    public String joinGroup(String groupId, HttpSession session);
 
 }

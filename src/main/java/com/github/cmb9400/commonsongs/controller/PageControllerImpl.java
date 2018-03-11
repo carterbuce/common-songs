@@ -142,4 +142,25 @@ public class PageControllerImpl implements PageController {
         }
     }
 
+
+    @Override
+    public String joinGroup(String groupId, HttpSession session) {
+        if (groupId == null || groupId.trim().equals("")
+                || session.getAttribute("api") == null) {
+            return "redirect:/";
+        }
+        else {
+            try {
+                SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+                spotifyDataService.registerUserWithGroup(api, groupId);
+
+                return "redirect:/group?groupId=" + groupId;
+            }
+            catch(IOException | SpotifyWebApiException e) {
+                return "redirect:/group?groupId=" + groupId;
+            }
+        }
+
+    }
+
 }
