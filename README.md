@@ -28,15 +28,3 @@ Using values from the setup step, run
 To enable debugging, add the following and attach a remote debugger on port 5005
     
     -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
-
-## Database Access
-Spring runs a built-in [H2](http://www.h2database.com/html/main.html) database.
-
-To connect to the database, you can go to <http://localhost:8080/h2-console/>
-
-Use the following settings:
-
-    Driver Class: org.h2.Driver
-    JDBC URL: jdbc:h2:file:~/SkipAssistantDB
-    User Name: sa
-    Password: <empty>

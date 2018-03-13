@@ -41,7 +41,7 @@ public class SpotifyDataService {
             // Collect all of a user's saved tracks using spotify's paginated request format
             // TODO maybe keep the track item itself instead of just URI? check their .equals() method
             // TODO handle the same track with different spotify URIs, ex 3xZ4wgiv2fIiIWrKYPLlng and 0OgGn1ofaj55l2PcihQQGV
-            Set<String> savedTracks = new HashSet<>();
+            Set<Track> savedTracks = new HashSet<>();
             Paging<SavedTrack> savedTrackPage = api.getUsersSavedTracks().build().execute();
             for (int i = 0; i <= savedTrackPage.getTotal(); i += 50) {
                 savedTrackPage = api.getUsersSavedTracks().limit(50).offset(i).build().execute(); // 50 is spotify's max
@@ -49,7 +49,6 @@ public class SpotifyDataService {
                 savedTracks.addAll(
                         Arrays.stream(savedTrackPage.getItems())
                                 .map(SavedTrack::getTrack)
-                                .map(Track::getUri)
                                 .collect(Collectors.toList())
                 );
             }
@@ -102,7 +101,7 @@ public class SpotifyDataService {
         String userId = api.getCurrentUsersProfile().build().execute().getId();
 
         if(database.getUser(userId) == null) {
-            User user = new User(userId, new HashSet<String>(), new HashSet<Group>());
+            User user = new User(userId, new HashSet<Track>(), new HashSet<Group>());
             database.createUser(user);
         }
     }

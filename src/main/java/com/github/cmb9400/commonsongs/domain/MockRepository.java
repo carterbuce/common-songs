@@ -1,5 +1,7 @@
 package com.github.cmb9400.commonsongs.domain;
 
+import com.wrapper.spotify.model_objects.specification.Track;
+
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -32,24 +34,21 @@ public class MockRepository {
         return groupMap.get(groupId).users;
     }
 
-    public Set<String> getTracksForUserId(String userId) {
+    public Set<Track> getTracksForUserId(String userId) {
         return userMap.get(userId).savedSongs;
     }
 
     public void createUser(User user) {
-        userMap.put(user.userId, user);
+        userMap.putIfAbsent(user.userId, user);
     }
 
     @Transactional
     public void createGroup(Group group) {
-        if(groupMap.get(group.groupId) == null) {
-            groupMap.put(group.groupId, group);
-        }
-        // TODO else throw exception?
+        groupMap.putIfAbsent(group.groupId, group);
     }
 
     @Transactional
-    public void setUserSavedTracks(String userId, Set<String> tracks) {
+    public void setUserSavedTracks(String userId, Set<Track> tracks) {
         userMap.get(userId).setSavedSongs(tracks);
     }
 

@@ -40,13 +40,19 @@ public interface PageController {
     /**
      * create a new group and add the user to it. redirects to the new group's page
      */
-    @PostMapping("/create")
+    @PostMapping("/group/create")
     public String createGroup(String name, HttpSession session);
 
     /**
      * endpoint to add a new user to an existing group
      */
-    @PostMapping("/join")
+    @PostMapping("/group/join")
     public String joinGroup(String groupId, HttpSession session);
+
+    /**
+     * combine the saved songs of all the users and generate a spotify playlist of their common songs
+     */
+    @PostMapping("/group/view")
+    public String generatePlaylist(String groupId, Model model, HttpSession session);
 
 }

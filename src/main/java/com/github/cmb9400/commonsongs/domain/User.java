@@ -1,17 +1,19 @@
 package com.github.cmb9400.commonsongs.domain;
 
+import com.wrapper.spotify.model_objects.specification.Track;
+
 import java.io.Serializable;
 import java.util.Set;
 
 public class User implements Serializable{
 
     protected String userId;
-    protected Set<String> savedSongs;
+    protected Set<Track> savedSongs;
     protected Set<Group> groups;
 
     public User(){}
 
-    public User(String userId, Set<String> savedSongs, Set<Group> groups) {
+    public User(String userId, Set<Track> savedSongs, Set<Group> groups) {
         this.userId = userId;
         this.savedSongs = savedSongs;
         this.groups = groups;
@@ -25,11 +27,11 @@ public class User implements Serializable{
         this.userId = userId;
     }
 
-    public Set<String> getSavedSongs() {
+    public Set<Track> getSavedSongs() {
         return savedSongs;
     }
 
-    public void setSavedSongs(Set<String> savedSongs) {
+    public void setSavedSongs(Set<Track> savedSongs) {
         this.savedSongs = savedSongs;
     }
 

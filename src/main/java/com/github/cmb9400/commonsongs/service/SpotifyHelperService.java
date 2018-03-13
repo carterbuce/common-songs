@@ -1,9 +1,11 @@
 package com.github.cmb9400.commonsongs.service;
 
+import com.github.cmb9400.commonsongs.domain.User;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import com.wrapper.spotify.model_objects.specification.Track;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,8 @@ import javax.annotation.Resource;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Service
@@ -89,6 +93,29 @@ public class SpotifyHelperService {
         }
     }
 
+
+    /**
+     * combine the common tracks of a set of users, ignoring users with zero saved songs
+     */
+    public Set<Track> getCommonSongs(Set<User> userSet) {
+        Set<Track> tracks = new HashSet<>();
+
+        // first add all the tracks from all the users
+        for(User user : userSet) {
+            tracks.addAll(user.getSavedSongs());
+        }
+
+        // next take away tracks that users don't have
+        for(User user : userSet) {
+            Set<Track> savedSongs = user.getSavedSongs();
+
+            if(savedSongs.size() > 0) {
+                tracks.retainAll(savedSongs); // take the intersection
+            }
+        }
+
+        return tracks;
+    }
 
 
 }

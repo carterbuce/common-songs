@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Common Songs</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+
+    <a th:href="|/group?groupId=${groupId}|">back</a>
+
+    <br /><br />
+
+
+    <form ACTION="#" th:action="@{/savePlaylist}" method="POST">
+        <input type="hidden" th:name="groupId" th:value="${groupId}" />
+        <button>Add Playlist To Spotify</button>
+    </form>
+
+    <table border="1" style="max-width:300px;">
+        <tr>
+            <td>Title</td>
+            <td>Artist</td>
+        </tr>
+        <tr th:each="song : ${songs}">
+            <td>
+                <p th:text="${song.getName()}"></p>
+            </td>
+            <td>
+                <p th:text="${song.getArtists()[0].getName()}"></p>
+            </td>
+        </tr>
+    </table>
+
+
+
+</body>
+</html>

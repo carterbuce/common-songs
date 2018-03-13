@@ -14,7 +14,7 @@
 
     <br /><br />
 
-    <form ACTION="#" th:action="@{/join}" method="POST">
+    <form ACTION="#" th:action="@{/group/join}" method="POST">
         <input type="hidden" th:name="groupId" th:value="${group.groupId}" />
         <button>Join Group</button>
     </form>
@@ -36,7 +36,10 @@
         </tr>
     </table>
 
-    <input type="button" value="Get group playlist" id="compute" />
+    <form ACTION="#" th:action="@{/group/view}" method="POST">
+        <input type="hidden" th:name="groupId" th:value="${group.groupId}" />
+        <button>View Group Playlist</button>
+    </form>
     <br /><br />
     To invite friends to this group, share the link with them! <br /> They must be logged in first.
 

@@ -5,6 +5,7 @@ import com.github.cmb9400.commonsongs.service.SpotifyDataService;
 import com.github.cmb9400.commonsongs.service.SpotifyHelperService;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
+import com.wrapper.spotify.model_objects.specification.Track;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 public class PageControllerImpl implements PageController {
@@ -102,6 +104,7 @@ public class PageControllerImpl implements PageController {
 
     @Override
     public ResponseEntity updateSavedTracks(HttpSession session) {
+        //TODO should probably figure out a way to control the amount of times a user can do this
         Map<String, String> response = new HashMap<>();
         response.put("success", "false");
 
@@ -119,6 +122,25 @@ public class PageControllerImpl implements PageController {
 
         // return a 200 ok with body of {"success": <true|false>}
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public String generatePlaylist(String groupId, Model model, HttpSession session) {
+        //TODO make this method return a group-specific url so browsers don't get form resubmission
+        if (groupId == null || groupId.trim().equals("")
+                || session.getAttribute("api") == null
+                || !spotifyDataService.groupIdExists(groupId)) {
+            return "redirect:/";
+        }
+        else {
+            Group group = spotifyDataService.getGroup(groupId);
+            Set<Track> commonSongs = spotifyHelperService.getCommonSongs(group.getUsers());
+
+            model.addAttribute("songs", commonSongs);
+            model.addAttribute("groupId", groupId);
+
+            return "viewPlaylist";
+        }
+
     }
 
     @Override
