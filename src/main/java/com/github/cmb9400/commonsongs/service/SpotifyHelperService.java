@@ -1,6 +1,8 @@
 package com.github.cmb9400.commonsongs.service;
 
+import com.github.cmb9400.commonsongs.domain.Group;
 import com.github.cmb9400.commonsongs.domain.User;
+import com.google.gson.JsonArray;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -17,7 +19,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -115,6 +119,35 @@ public class SpotifyHelperService {
         }
 
         return tracks;
+    }
+
+
+    public boolean createPlaylist(SpotifyApi api, Group group) {
+        try {
+            Set<Track> commonSongs = getCommonSongs(group.getUsers());
+
+            // create the playlist
+            String userId = api.getCurrentUsersProfile().build().execute().getId();
+            String playlistId = api.createPlaylist(userId, group.getName())
+                    .description("Created by CommonSongs").build().execute().getId();
+
+            // get the track URIs
+            List<String> commonSongUris = commonSongs.stream().map(Track::getUri).collect(Collectors.toList());
+
+            // add the URIs to the playlist, max 100 per request
+            for(int i = 0; i < commonSongUris.size(); i += 100) {
+                JsonArray trackArray = new JsonArray();
+                int upperLimit = (i + 100) >= commonSongUris.size() ? commonSongUris.size() : (i + 100);
+                commonSongUris.subList(i, upperLimit).forEach(trackArray::add);
+
+                api.addTracksToPlaylist(userId, playlistId, trackArray).build().execute();
+            }
+
+            return true;
+        }
+        catch(Exception e) {
+            return false;
+        }
     }
 
 

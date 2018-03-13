@@ -124,24 +124,6 @@ public class PageControllerImpl implements PageController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public String generatePlaylist(String groupId, Model model, HttpSession session) {
-        //TODO make this method return a group-specific url so browsers don't get form resubmission
-        if (groupId == null || groupId.trim().equals("")
-                || session.getAttribute("api") == null
-                || !spotifyDataService.groupIdExists(groupId)) {
-            return "redirect:/";
-        }
-        else {
-            Group group = spotifyDataService.getGroup(groupId);
-            Set<Track> commonSongs = spotifyHelperService.getCommonSongs(group.getUsers());
-
-            model.addAttribute("songs", commonSongs);
-            model.addAttribute("groupId", groupId);
-
-            return "viewPlaylist";
-        }
-
-    }
 
     @Override
     public String createGroup(String name, HttpSession session) {
@@ -183,6 +165,45 @@ public class PageControllerImpl implements PageController {
             }
         }
 
+    }
+
+
+    @Override
+    public String generatePlaylist(String groupId, Model model, HttpSession session) {
+        //TODO make this method return a group-specific url so browsers don't get form resubmission
+        if (groupId == null || groupId.trim().equals("")
+                || session.getAttribute("api") == null
+                || !spotifyDataService.groupIdExists(groupId)) {
+            return "redirect:/";
+        }
+        else {
+            Group group = spotifyDataService.getGroup(groupId);
+            Set<Track> commonSongs = spotifyHelperService.getCommonSongs(group.getUsers());
+
+            model.addAttribute("songs", commonSongs);
+            model.addAttribute("groupId", groupId);
+
+            return "viewPlaylist";
+        }
+
+    }
+
+
+    @Override
+    public String savePlaylist(String groupId, HttpSession session) {
+        if (groupId == null || groupId.trim().equals("")
+                || session.getAttribute("api") == null
+                || !spotifyDataService.groupIdExists(groupId)) {
+            return "redirect:/";
+        }
+        else {
+            SpotifyApi api = (SpotifyApi) session.getAttribute("api");
+            Group group = spotifyDataService.getGroup(groupId);
+
+            spotifyHelperService.createPlaylist(api, group);
+
+            return "redirect:/group?groupId=" + groupId;
+        }
     }
 
 }

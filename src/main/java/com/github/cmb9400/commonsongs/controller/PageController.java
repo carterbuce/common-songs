@@ -55,4 +55,10 @@ public interface PageController {
     @PostMapping("/group/view")
     public String generatePlaylist(String groupId, Model model, HttpSession session);
 
+    /**
+     * save a group's playlist to the user's spotify account
+     */
+    @PostMapping("/group/save")
+    public String savePlaylist(String groupId, HttpSession session);
+
 }
